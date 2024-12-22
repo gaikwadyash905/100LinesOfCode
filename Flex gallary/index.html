@@ -4,51 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>day7</title>
+    <title>Interactive Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="gallary">
-        <div class="item">
+    <div class="gallery">
+        <div class="item" tabindex="0" aria-expanded="false">
             <p>lets</p>
             <p>I</p>
             <p>never</p>
         </div>
-        <div class="item">
+        <div class="item" tabindex="0" aria-expanded="false">
             <p>experience</p>
             <p>II</p>
             <p>ever</p>
         </div>
-        <div class="item">
+        <div class="item" tabindex="0" aria-expanded="false">
             <p>it</p>
             <p>III</p>
             <p>move</p>
         </div>
-        <div class="item">
+        <div class="item" tabindex="0" aria-expanded="false">
             <p>together</p>
             <p>IV</p>
-            <p>back</p>
+            <p>back,</p>
         </div>
-        <div class="item">
+        <div class="item" tabindex="0" aria-expanded="false">
             <p>and</p>
             <p>V</p>
-            <p>UnderStood?</p>
+            <p>Understood?</p>
         </div>
     </div>
     <script>
-        var items = document.querySelectorAll(".item");
+        const items = document.querySelectorAll(".item");
+
         function toggleOpenImage() {
-            this.classList.toggle("open-image");
+            const isOpen = this.classList.toggle("open-image");
+            this.setAttribute("aria-expanded", isOpen);
         }
+
         function toggleOpenText(e) {
-            if (e.propertyName == 'flex-grow' || e.propertyName == 'flex')
+            if (e.propertyName === "flex-grow" || e.propertyName === "flex") {
                 this.classList.toggle("open-text");
+            }
         }
+
         items.forEach(item => {
             item.addEventListener("click", toggleOpenImage);
-            item.addEventListener("transitionend", toggleOpenText)
+            item.addEventListener("transitionend", toggleOpenText);
+            item.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleOpenImage.call(this);
+                }
+            });
         });
     </script>
 </body>

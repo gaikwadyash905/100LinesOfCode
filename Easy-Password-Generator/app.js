@@ -1,36 +1,57 @@
 // Required library to generate random words
-const faker = require('faker')
+const faker = require('faker');
 
-// Number of characters, numbers and words to generate the password
-const WORDS = 2
-const CHARACTERS = 1
-const NUMBERS = 4
-const SEPARATOR = '-'
+// Function to validate if a value is a positive integer
+const isPositiveInteger = (value) => Number.isInteger(value) && value >= 0;
 
-// Check if the inputs are positive, at least one word is selected and all are integers
-if (WORDS < 1 || CHARACTERS < 0 || NUMBERS < 0 || !Number.isInteger(WORDS) || !Number.isInteger(CHARACTERS) || !Number.isInteger(NUMBERS)) {
-console.log("Invalid Input")
-} else {
-    // Generate words separated by a hyphen (-)
-    var pass = faker.random.word()
+// Input Parameters
+const WORDS = 2;       // Number of words
+const CHARACTERS = 1;  // Number of special characters
+const NUMBERS = 4;     // Number of digits
+const SEPARATOR = '-'; // Separator between words
+
+// Validate Inputs
+if (
+    !isPositiveInteger(WORDS) ||
+    !isPositiveInteger(CHARACTERS) ||
+    !isPositiveInteger(NUMBERS) ||
+    WORDS < 1
+) {
+    console.error("Invalid Input: Ensure WORDS >= 1 and CHARACTERS, NUMBERS >= 0, and all are integers.");
+    process.exit(1);
+}
+
+try {
+    // Generate words separated by the SEPARATOR
+    let pass = faker.random.word();
     for (let i = 0; i < WORDS - 1; i++) {
-        pass += SEPARATOR + faker.random.word()
+        pass += SEPARATOR + faker.random.word();
     }
-    
-    // Some non-alphanumeric characters to append and a function to get one random
-    const characters = [ "~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "_", "-", "+", "=", "|", ":", ";", "<", ",", ">", ".", "?", "/"]
-    const randomChar = () => characters[Math.floor(Math.random()*characters.length)]
 
-    // Append numbers to the end of the word
+    // Define special characters and random selector
+    const characters = "~`!@#$%^&*_-+=|:;<,>.?/".split("");
+    const randomChar = () => characters[Math.floor(Math.random() * characters.length)];
+
+    // Append random numbers to the end of the password
     for (let i = 0; i < NUMBERS; i++) {
-        let num = Math.floor(Math.random()*10) 
-        pass += num.toString()
-    }
-    // Append characters to the beginning of the word
-    for (let i = 0; i < CHARACTERS; i++) {
-        pass = randomChar() + pass
+        const num = Math.floor(Math.random() * 10);
+        pass += num.toString();
     }
 
-    // Logging out password
-    console.log("Your password is: " + pass)
+    // Append random special characters to the beginning of the password
+    for (let i = 0; i < CHARACTERS; i++) {
+        pass = randomChar() + pass;
+    }
+
+    // Log the generated password
+    console.log("Your password is:", pass);
+
+    // Optional: Provide a strength message without enforcing conditions
+    if (pass.length < 8) {
+        console.warn(
+            "Note: Passwords shorter than 8 characters might be weak for secure applications. Use more words, numbers, or characters for better security."
+        );
+    }
+} catch (error) {
+    console.error("An unexpected error occurred:", error.message);
 }
